@@ -1,2 +1,3 @@
 # alx-interview
-Cheers to specialization
+Cheers to specialization 
+readme for alx interview repo
