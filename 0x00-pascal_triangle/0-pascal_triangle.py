@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+"""displays pascal triangle"""
+
 
 def pascal_triangle(n):
     """Returns characters representing Pascal's triangle."""
