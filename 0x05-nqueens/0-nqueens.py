@@ -1,49 +1,53 @@
 #!/usr/bin/python3
-"""N queens puzzle solution"""
-
+""" Solve the N Queens problem """
 import sys
 
+if len(sys.argv) != 2:
+    print("Usage: nqueens N")
+    exit(1)
 
-def is_safe(board, row, col):
-    """Check if it's safe to place a queen at board[row][col]"""
-    for prev_row in range(row):
-        if board[prev_row] == col or \
-           board[prev_row] - prev_row == col - row or \
-           board[prev_row] + prev_row == col + row:
-            return False
-    return True
+try:
+    n = int(sys.argv[1])
+    if n < 4:
+        print('N must be at least 4')
+        exit(1)
+except ValueError:
+    print('N must be a number')
+    exit(1)
 
+def queens_position(n, row=0, col=[], diag1=[], diag2=[]):
+    """
+    Generate possible safe positions for the queen to be placed.
 
-def solve_nqueens(n, row=0, board=[]):
-    """Recursively solve the N queens puzzle"""
-    if row == n:
-        print([[r, c] for r, c in enumerate(board)])
-        return
-    for col in range(n):
-        if is_safe(board, row, col):
-            board.append(col)
-            solve_nqueens(n, row + 1, board)
-            board.pop()
+    Args:
+        n: size of the chessboard
+        row: The current row being considered for queen placement.
+        col: A list that holds the column positions of queens for each row.
+        diag1: List that holds the diagonal positions where queens are placed.
+        diag2: List that holds the anti-diagonal positions where queens are placed.
+    """
+    if row < n:
+        for j in range(n):
+            if j not in col and row + j not in diag1 and row - j not in diag2:
+                yield from queens_position(n, row + 1, col + [j], diag1 + [row + j], diag2 + [row - j])
+    else:
+        yield col
 
+def solve_queens(n):
+    """
+    Iterate through the queens_position function and print the positions of queens for each solution generated.
 
-def main():
-    """Main function"""
-    if len(sys.argv) != 2:
-        print("Usage: nqueens N")
-        sys.exit(1)
+    Args:
+        n: size of the chessboard
+    """
+    solution_positions = []
+    row_index = 0
+    for solution in queens_position(n, 0):
+        for col_index in solution:
+            solution_positions.append([row_index, col_index])
+            row_index += 1
+        print(solution_positions)
+        solution_positions = []
+        row_index = 0
 
-    try:
-        N = int(sys.argv[1])
-    except ValueError:
-        print("N must be a number")
-        sys.exit(1)
-
-    if N < 4:
-        print("N must be at least 4")
-        sys.exit(1)
-
-    solve_nqueens(N)
-
-
-if __name__ == "__main__":
-    main()
+solve_queens(n)
